@@ -1,4 +1,4 @@
-package smtpserver.src.parser;
+package parser;
 
 import java.io.*;
 import java.net.*;
@@ -11,6 +11,7 @@ public class WebServerPool {
 	
 	public static void main(String args[]) throws Exception
 	{
+		//Probando ahora 
 		//server socket con tcp
 		//while true
 			//escuchar tcp connection

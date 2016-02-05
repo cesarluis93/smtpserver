@@ -1,4 +1,4 @@
-package smtpserver.src.parser;
+package parser;
 
 
 //implementacion de cola

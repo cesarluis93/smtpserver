@@ -1,4 +1,4 @@
-package smtpserver.src.parser;
+package parser;
 
 public class SwimmingThread implements Runnable{
 	

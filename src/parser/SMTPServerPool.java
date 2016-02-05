@@ -5,9 +5,10 @@ import java.net.*;
 import java.util.*;
 
 
-public class WebServerPool {
+public class SMTPServerPool {
 	
-	public static int PUERTO = 2407; 
+	public static int PUERTO = 25; 
+	public static int CAPACIDAD = 10;
 	
 	public static void main(String args[]) throws Exception
 	{
@@ -21,11 +22,11 @@ public class WebServerPool {
 		
 		//ingresar cantidad de threads como args
 		
-		System.out.println("Iniciando Server - Protocolo TCP");
+		System.out.println("Iniciando Web Server - Protocolo TCP");
 		System.out.println("Puerto: "+PUERTO+"\n");
 		ServerSocket s = new ServerSocket(PUERTO); //inicializa un nuevo socket
-		ThreadPoolManager pool = new ThreadPoolManager(Integer.parseInt(args[0]));
-		System.out.println("Capaidad maxima: "+args[0]+"\n");
+		ThreadPoolManager pool = new ThreadPoolManager(CAPACIDAD);
+		System.out.println("Capaidad maxima: "+CAPACIDAD+"\n");
 		
 		while(true)
 		{	
@@ -71,6 +72,67 @@ public class WebServerPool {
 		}		
 	}
 }
+
+final class SmtpRequest implements Runnable{
+
+	public String recibido;
+	public String enviado;
+	public Socket conexion;
+	public BufferedReader input;
+	public DataOutputStream output;
+	
+	public SmtpRequest(){}
+	
+	public SmtpRequest(Socket conexion) throws IOException
+	{
+		recibido = "";
+		enviado = "";
+		this.conexion = conexion;
+		input = new BufferedReader(new InputStreamReader(conexion.getInputStream()));
+		output = new DataOutputStream(conexion.getOutputStream());
+	}	
+	
+	@Override
+	public void run() {
+		//Recibir y responder paso por paso
+		
+		try {
+			
+			//iterar y leer todo el SMTP request
+			
+			String fragmento = input.readLine();
+			while(!fragmento.isEmpty())
+			{
+				recibido += fragmento+"\n";
+				try{
+					fragmento = input.readLine();						
+				}catch(Exception e)
+				{
+					e.printStackTrace();
+				}							
+			}			
+		
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();			
+		}
+		
+		//HELO
+		
+		//MAIL FROM:
+		
+		//RCPT TO:
+		
+		//DATA
+		
+		//.
+		
+		//QUIT
+		
+	}
+	
+}
+
 
 final class HttpRequest implements Runnable{
 

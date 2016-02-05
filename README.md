@@ -17,5 +17,14 @@ Para poder resolver el dominio, por ejemplo si su servicio se llama “ewoks.com
 
 Para las pruebas, con Telnet se estará abriendo una conexión a su servidor. Se escribirán a mano los comandos SMTP y luego su servidor debe procesar la información recibida. 
 
+INSTRUCCIONES PARA MONTAR BD Y EJECUTAR TEST
 
-Tips: Recuerde las pruebas realizadas en clase. Haga pruebas contra un servidor SMTP y observe la secuencia de comandos. Debe replicar el comportamiento.
+1. Instalar XAMPP
+2. Correr Apache y MySql
+3. Crear una base de datos con nombre 'stmp_redes'
+4. Crear una tabla con los siguientes campos:
+	* id: tipo int, primarykey, autoincrement, not null
+	* username: tipo varchar, longitud 50, not null
+	* password: tipo varchar, longitud 10, not null
+5. Insertar un par de registros para pruebas.
+5. Correr la clase Tester del package data.

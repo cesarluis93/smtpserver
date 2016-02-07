@@ -9,18 +9,20 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.InitialDirContext;
 
-public class DNS {
+/**
+ * Clase que se usa para consultar un dominio, si es local, y si no, si podemos encontrar un host que lo maneje
+ * Tomado de: http://captechconsulting.com/blog/david-tiller/accessing-the-dusty-corners-dns-java
+ */
 
+public class DNS {
+	
 	public static final String LOCAL_DOMAIN = "LabSMT.com";
 	private static final String MX_ATTRIB= "A";
 	private static final String[] MX_ATTRIBS= {MX_ATTRIB};
 	private InitialDirContext idc;
 	private String error;
 	
-	/**
-	 * Clase que se usa para consultar un dominio, si es local, y si no, si podemos encontrar un host que lo maneje
-	 * Tomado de: http://captechconsulting.com/blog/david-tiller/accessing-the-dusty-corners-dns-java
-	 */
+
 	public DNS() throws NamingException {
 		Properties env= new Properties();
 		env.setProperty(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.dns.DnsContextFactory");

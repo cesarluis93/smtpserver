@@ -22,21 +22,34 @@ public class Connector {
 		}	
 	}
 	
-	public void execute(String query){
+	public ResultSet execute(String query){
+		Statement stmt;
+		ResultSet rs;
 		try {
-			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(query);
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(query);
 			
-			while (rs.next()){
-				System.out.println("Ussername: " + rs.getString("username"));
-				System.out.println("Password: " + rs.getString("password") + "\n");
-			}
-			
+			return rs;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
+			return null;
 		}
-		
+	}
+	
+	public int update(String query){
+		Statement stmt;
+		int rowsAffected;
+		try {
+			stmt = conn.createStatement();
+			rowsAffected = stmt.executeUpdate(query);
+			
+			return rowsAffected;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+			return -1;
+		}
 	}
 	
 }

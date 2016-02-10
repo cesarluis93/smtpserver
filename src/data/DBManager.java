@@ -2,6 +2,8 @@ package data;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Statement;
 
 public class DBManager {
 	Connector conn;
@@ -65,4 +67,8 @@ public class DBManager {
 		
 		return -1;
 	}
+	
+    
+    
+
 }

@@ -52,4 +52,20 @@ public class Connector {
 		}
 	}
 	
+    /**
+     * Permite obtener el result set de cierta tabla.
+     * @param nombreTabla Nombre de la tabla cuyo resultSet se desea hallar.
+     * @return ResultSet con el resultado. Puede obtenerse null si no se concreta la conexión.
+     */
+    public ResultSet datosDeTabla(String nombreTabla){
+        ResultSet resultado = null;
+        try{
+            Statement instruccionesBD = conn.createStatement();
+            resultado = instruccionesBD.executeQuery("SELECT * FROM " + nombreTabla);
+        }catch (Exception noConecto){
+            System.out.println("Error inesperado en método datosDeTabla, ConexionBD. Contacte al proveedor de su programa.");
+        }
+        return resultado;
+    }
+	
 }

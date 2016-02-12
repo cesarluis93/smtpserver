@@ -6,7 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Tools {
+public final class Tools {
 	public Tools(){}
 
 	/**
@@ -14,7 +14,7 @@ public class Tools {
 	 * @param data - Contenido del archivo json.
 	 * @return Contenido tabulada.
 	 */
-	public String convertToContentJsonView(String data){
+	public static String convertToContentJsonView(String data){
 		String toshow = "", tabs;
 		int numTabs = 0;
 		for (int i=0; i<data.length(); i++){			
@@ -45,11 +45,11 @@ public class Tools {
 		return toshow;
 	}
 	
-	public String convertSelectResultToContentJsonView(JSONArray data){
+	public static String convertSelectResultToContentJsonView(JSONArray data){
 		String toshow = "";
 		for (int i=0; i<data.length(); i++){
 			try {
-				toshow += String.valueOf(i+1) + " : " + data.getJSONArray(i).toString() + "\n";
+				toshow += String.valueOf(i+1) + " : " + data.getJSONObject(i).toString() + "\n";
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

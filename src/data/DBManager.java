@@ -2,73 +2,141 @@ package data;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Statement;
+import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class DBManager {
-	Connector conn;
-	ResultSet rs;
-
-	public DBManager() {
-		conn = new Connector();
-		conn.connect();
-	}
 	
-	public int createUser(String user, String pass) {
-		if (this.existUser(user) == 1){
-			System.out.println("Ya existe un usuario con el mismo nombre de usuario.");
-			return 0;
+	public DBManager(){};
+	
+	/**
+	 * Crea un usuario y lo registra en la BD si no existe.
+	 * @param user Nombre de usuario
+	 * @param pass Contraseña de usuario
+	 * @param birthdate Fecha de nacimiento
+	 */
+	public void createUser(String user, String pass, String birthdate) {
+		User usuario = this.existUser(user);
+		if (usuario != null){
+			System.out.println("Ya existe un usuario registrado como '" + user +"'.");
+			return;
 		}
 		
-		String query = String.format("INSERT INTO `usuario` (`username`, `password`) VALUES ('%1$s', '%2$s');",
-				user, pass);
-		
-		int result = conn.update(query);
-		
-		if (result > 0){
-			System.out.println("Usuario ingresado con éxito");
-			return 1;
+		usuario = new User(user, pass, birthdate);
+		if (usuario.save() > 0){
+			System.out.println("Usuario '" + user + "' ingresado con éxito.");
+		} else {
+			System.out.println("No se pudo guardar el usuario '" + user + "'.");
 		}
-		System.out.println("No se pudo ingresar el usuario");
-		
-		return -1;
-
 	}
 	
-	public int deleteUser(String user){
-		if (this.existUser(user) == 0){
+	/**
+	 * Eliminar un usuario si existe.
+	 * @param user El usuario a eliminar
+	 */
+	public void deleteUser(String user){
+		User usuario = this.existUser(user);
+		if (usuario == null){
 			System.out.println("El nombre de usuario '" + user + "' no existe.");
-			return 0;
+			return;
 		}
 		
-		String query = "DELETE FROM `usuario` WHERE `username` = '" + user + "';";
-		
-		int result = conn.update(query);
-		
-		if (result > 0){
-			System.out.println("Usuario eliminado con éxito");
-			return 1;
+		if (usuario.delete() > 0){
+			System.out.println("Usuario '" + user + "' eliminado con éxito.");
+		} else {
+			System.out.println("No se pudo eliminar el usuario '" + user + "'.");
 		}
-		System.out.println("No se pudo eliminar el usuario");
-		
-		return -1;
 	}
 	
-	public int existUser(String user){
-		String querie = "SELECT count(*) AS c FROM usuario WHERE username='" + user +"';";
-		rs = conn.execute(querie);
+	/**
+	 * Verifica si un usuario existe o no.
+	 * @param user El nombre del usuario a examinar
+	 * @return	El objeto que mapea al usuario si existe. De otro modo, devuelve null
+	 */
+	public User existUser(String user){
+		String query = "SELECT * FROM usuarios WHERE username='" + user +"';";
+		User usuario = null;
 		
 		try {
-			rs.next();
-			return (rs.getInt("c") == 0) ? 0 : 1;
-		} catch (SQLException e1) {
-			e1.printStackTrace();
+			ResultSet rs = Connector.execute(query);	
+			while (rs.next()) {
+				usuario = new User(
+					rs.getInt("id"),
+					rs.getString("username"),
+					rs.getString("password"),
+					rs.getString("birthdate")
+				);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
 		}
 		
-		return -1;
+		return usuario;
 	}
 	
-    
-    
-
+	/**
+	 * Crea y registro un correo a la BD.
+	 * @param from Usuario que envía el correo
+	 * @param rcpt_to	Listado de usuarios destinatarios
+	 * @param data	Mensaje del correo
+	 */
+	public void newMail(String from, ArrayList<String> rcpt_to, String data) {
+		User fromUser = this.existUser(from);
+		if (fromUser == null){
+			System.out.println("El nombre de usuario '" + from + "' no existe.");
+			return;
+		}
+		
+		// Registrar el correo para cada destinatario.
+		for (String rcpt: rcpt_to){
+			// Si el destinatario no existe en la BD, no lo registra y da un aviso.
+			User toUser = this.existUser(rcpt);
+			if (toUser == null){
+				System.out.println("El nombre de usuario '" + rcpt + "' no existe.");
+				continue;
+			}
+			
+			Mail mail = new Mail(fromUser, toUser, data);
+			if (mail.save() > 0) {
+				System.out.println("Correo de '" + from + "' a '" + rcpt + "' ingresado con éxito.");
+			} else {
+				System.out.println("Correo de '" + from + "' a '" + rcpt + "' no fue ingresado.");
+			}
+		}
+	}
+	
+	public JSONArray retrieveJsonMails(String user){
+		User usuario = this.existUser(user);
+		if (usuario == null){
+			System.out.println("El nombre de usuario '" + user + "' no existe.");
+			return null;
+		}
+		
+		ArrayList<Mail> mails = usuario.retrievedMails();
+		if (mails == null){
+			System.out.println("Ningún correo encontrado para el usuario '" + user + "'.");
+			return null;
+		}
+		
+		JSONArray jsonMails = new JSONArray();
+		for (Mail mail: mails){
+			JSONObject jsonMail = new JSONObject();
+			
+			try {
+				jsonMail.put("from", mail.getFrom().getUsername());
+				jsonMail.put("date", mail.getDateReceived());
+				jsonMail.put("message", mail.getBody());
+			} catch (JSONException e) {
+				System.out.println("Ocurrió un error al construir el JSON.");
+				System.out.println(e.getMessage());
+			}
+			
+			jsonMails.put(jsonMail);
+		}
+		
+		return jsonMails;
+	}
 }

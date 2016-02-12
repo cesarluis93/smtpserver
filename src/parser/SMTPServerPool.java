@@ -117,7 +117,12 @@ final class SmtpRequest implements Runnable{
 			e.printStackTrace();			
 		}
 		
-		//HELO
+		//leer el input y buscar helo
+		//si existe helo entonces regresar saludo
+		//else decirle ño
+			//output.writeBytes(enviado);
+		
+		//realizar lo mismo para.....
 		
 		//MAIL FROM:
 		

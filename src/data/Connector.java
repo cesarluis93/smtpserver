@@ -6,23 +6,33 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class Connector {
-	Connection conn;
+public final class Connector {
+	private static Connection conn;
 	
 	public Connector(){
 		conn = null; 
 	}
 	
-	public void connect(){
+	public static void connect(){
 		try {
 			conn = DriverManager.getConnection("jdbc:mysql://localhost/smtp_redes", "root", "");
 			System.out.println("Connection success");
 		} catch (SQLException e) {
 			System.out.println(e);
-		}	
+		}
 	}
 	
-	public ResultSet execute(String query){
+	public static void close(){
+		try {
+			conn.close();
+			System.out.println("Connection clossed");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static ResultSet execute(String query){
 		Statement stmt;
 		ResultSet rs;
 		try {
@@ -37,7 +47,7 @@ public class Connector {
 		}
 	}
 	
-	public int update(String query){
+	public static int update(String query){
 		Statement stmt;
 		int rowsAffected;
 		try {
@@ -51,21 +61,5 @@ public class Connector {
 			return -1;
 		}
 	}
-	
-    /**
-     * Permite obtener el result set de cierta tabla.
-     * @param nombreTabla Nombre de la tabla cuyo resultSet se desea hallar.
-     * @return ResultSet con el resultado. Puede obtenerse null si no se concreta la conexión.
-     */
-    public ResultSet datosDeTabla(String nombreTabla){
-        ResultSet resultado = null;
-        try{
-            Statement instruccionesBD = conn.createStatement();
-            resultado = instruccionesBD.executeQuery("SELECT * FROM " + nombreTabla);
-        }catch (Exception noConecto){
-            System.out.println("Error inesperado en método datosDeTabla, ConexionBD. Contacte al proveedor de su programa.");
-        }
-        return resultado;
-    }
 	
 }

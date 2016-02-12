@@ -46,18 +46,17 @@ public class Procesador {
                     
                 	Connector c = new Connector();
                     
-                    c.connect();
-                    ResultSet datosDeTabla = c.datosDeTabla("username");
-                    while (datosDeTabla.next()) {
-
-                        String usuarioBd =datosDeTabla.getString(2);
-                        if(usuario.equals(usuarioBd)){
-                            retorno="250 Ok";
-                           
-                        }else{
-                            retorno="550 Access Denied";
-                        }
-                    }
+                    //ResultSet datosDeTabla = Connector.datosDeTabla("username");
+//                    while (datosDeTabla.next()) {
+//
+//                        String usuarioBd =datosDeTabla.getString(2);
+//                        if(usuario.equals(usuarioBd)){
+//                            retorno="250 Ok";
+//                           
+//                        }else{
+//                            retorno="550 Access Denied";
+//                        }
+//                    }
                     
                 } else {
                     //si no es local

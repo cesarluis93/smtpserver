@@ -26,7 +26,7 @@ public class Procesador {
     //recibe una entrada con los datos ya verificados
     //nos da una respuesta
     public String procesarHelo(String dominio) {
-        return "Hello " + dominio + ", I am glad to meet you ";
+        return "250 Hello " + dominio + ", I am glad to meet you ";
     }
 
     public String procesarMail(String correo) throws SQLException {
@@ -86,17 +86,24 @@ public class Procesador {
     public String procesarRCPT(ArrayList<String> correos) {
         //aqui se tiene que verificar con DNS si esta direccion existe
         return "250 Ok";
+        //regresa un 502 si hay errores
     }
 
     public String procesarData() {
+    	//es decir la palabra reservada DATA
+    	//regresar indicador de iniciar el correo
+    	//return "354 Ingrese la data de su correo.
         return "250 Ok";
     }
 
     public String procesarDataEnd() {
-        return "250 Ok";
+    	//es decir lo que viene luego de procesarData()
+    	//recibir y recibir hasta que se envie un punto solo
+    	// .\n
+        return "250 Ok - Mensaje Encolado";
     }
 
     public String procesarQuit() {
-        return "221 Bye";
+        return "221 Bye bye beautiful being of creation!";
     }
 }

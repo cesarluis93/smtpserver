@@ -82,12 +82,15 @@ public class DBManager {
 	 * @param from Usuario que envía el correo
 	 * @param rcpt_to	Listado de usuarios destinatarios
 	 * @param data	Mensaje del correo
+	 * @return Lista de usuarios que no existen en el servidor
 	 */
-	public void newMail(String from, ArrayList<String> rcpt_to, String data) {
+	public ArrayList<String> newMail(String from, ArrayList<String> rcpt_to, String data) {
+		ArrayList<String> refused = new ArrayList<String>();
+		
 		User fromUser = this.existUser(from);
 		if (fromUser == null){
 			System.out.println("El nombre de usuario '" + from + "' no existe.");
-			return;
+			return null;
 		}
 		
 		// Registrar el correo para cada destinatario.
@@ -96,6 +99,7 @@ public class DBManager {
 			User toUser = this.existUser(rcpt);
 			if (toUser == null){
 				System.out.println("El nombre de usuario '" + rcpt + "' no existe.");
+				refused.add(rcpt);
 				continue;
 			}
 			
@@ -106,6 +110,8 @@ public class DBManager {
 				System.out.println("Correo de '" + from + "' a '" + rcpt + "' no fue ingresado.");
 			}
 		}
+		
+		return (refused.size() == 0)? null: refused;
 	}
 	
 	public JSONArray retrieveJsonMails(String user){

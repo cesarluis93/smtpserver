@@ -9,6 +9,7 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.InitialDirContext;
 
+
 /**
  * Clase que se usa para consultar un dominio, si es local, y si no, si podemos encontrar un host que lo maneje
  * Tomado de: http://captechconsulting.com/blog/david-tiller/accessing-the-dusty-corners-dns-java
@@ -76,5 +77,5 @@ public class DNS {
     public String getError() {
         return error;
     }
-	
+   
 }

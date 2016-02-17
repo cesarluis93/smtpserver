@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import javax.naming.NamingException;
 
 import data.Connector;
+import data.DBManager;
 
 public class Procesador {
 
@@ -44,7 +45,7 @@ public class Procesador {
                 if (Dns.esDominioLocal(dominio)) {
                     // si el usuario existe? falta conexion a la bd y retornar booleano
                     
-                	Connector c = new Connector();
+                	DBManager c = new DBManager();
                     
                     //ResultSet datosDeTabla = Connector.datosDeTabla("username");
 //                    while (datosDeTabla.next()) {

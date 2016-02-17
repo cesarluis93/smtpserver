@@ -13,12 +13,14 @@ public class DNSlookup {
 	
 	public void getNames(String[] names) 
     {
+		String temp = "";
 
         try
         {   
 
           for (String element: names){  // Lista de DNS que recibe
             // print the sorted mail exhchange servers
+        	temp = element;
             for (String mailHost: lookupMailHosts(element)) // CAMBIE arg[0] por element porque es para cada uno de la lista :P
             {
                 System.out.println(mailHost);            
@@ -27,7 +29,7 @@ public class DNSlookup {
         }
         catch (NamingException e)
         {
-            System.err.println("ERROR: No DNS record for '" + names + "'");
+            System.err.println("ERROR: No DNS record for '" + temp + "'");
             System.exit(-2);
         }
      }

@@ -1,9 +1,17 @@
 package main;
 
+import dns.DNSlookup;
+
 public class Server {
 
 	public static void main(String[] args) {
 		System.out.println("Hola chechita!");
+		
+		String[] test = {"yahoo.com", "gcc.org", "google.com", "chechita.com"};
+		
+		DNSlookup dns = new DNSlookup();
+		dns.getNames(test);
+		
 	}
 	
 	/*

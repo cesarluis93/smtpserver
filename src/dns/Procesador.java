@@ -6,10 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
+
 import javax.naming.NamingException;
 
 import data.Connector;
 import data.DBManager;
+import parser.SMTPServer;
 
 public class Procesador {
 
@@ -24,86 +27,44 @@ public class Procesador {
         }
     }
 
-    //recibe una entrada con los datos ya verificados
-    //nos da una respuesta
-    public String procesarHelo(String dominio) {
-        return "250 Hello " + dominio + ", I am glad to meet you ";
-    }
+    
+    public static void main(String[] args) {
+		
+    	
+		
+		String[] test = {"yahoo.com", "gcc.org", "google.com", "chechita.com"};
+		
+		SMTPServer domainName = new SMTPServer();
+		
+		DNSlookup dns = new DNSlookup();
+		
+		dns.getNames(test);
+		
+	}
+    
+	public void processHelo(String data)
+	{
+		
+		boolean temp;
+		
+			//extraer dominio
+			String[] correoUsuario = data.split("\\s+");
+			//extraer el segundo elemento
+			
+			if(correoUsuario.length > 1)
+			{
+				String nombreDominio = correoUsuario[1]; //nombre del dominio que escribe
+				System.out.println(nombreDominio);
+				
+			}
+			else
+			{
+				//error o poner comodin?
+				String nombreDominio = "dummy";
+				System.out.println(nombreDominio);
 
-    public String procesarMail(String correo) throws SQLException {
-        //aqui se tiene que verificar con DNS si esta direccion existe
-        String retorno;
-        String usuario;
-        String dominio;
-        if (correo.contains("@") && !correo.endsWith("@") && !correo.startsWith("@")) {
-            String[] datosDir = correo.split("@");
-            if (datosDir.length == 2) {
-                usuario = datosDir[0];
-                dominio = datosDir[1];
-
-                //preguntar si el dominio es local?
-                if (Dns.esDominioLocal(dominio)) {
-                    // si el usuario existe? falta conexion a la bd y retornar booleano
-                    
-                	DBManager c = new DBManager();
-                    
-                    //ResultSet datosDeTabla = Connector.datosDeTabla("username");
-//                    while (datosDeTabla.next()) {
-//
-//                        String usuarioBd =datosDeTabla.getString(2);
-//                        if(usuario.equals(usuarioBd)){
-//                            retorno="250 Ok";
-//                           
-//                        }else{
-//                            retorno="550 Access Denied";
-//                        }
-//                    }
-                    
-                } else {
-                    //si no es local
-                    List<String> ips = Dns.obtenerServidores(dominio);
-                    if (ips == null) {
-                        //retornar mensaje de error
-                        //dns.getError();
-                    } else {
-                        //jalar la primera IP
-                    }
-                }
-
-                //pedirle una IP al DNS
-
-            } else {
-                //error el formato de correo es <usuario>@<dominio>
-            }
-        } else {
-            //error el formato de correo es <usuario>@<dominio>
-        }
-
-        //if true...
-        return "250 Ok";
-    }
-
-    public String procesarRCPT(ArrayList<String> correos) {
-        //aqui se tiene que verificar con DNS si esta direccion existe
-        return "250 Ok";
-        //regresa un 502 si hay errores
-    }
-
-    public String procesarData() {
-    	//es decir la palabra reservada DATA
-    	//regresar indicador de iniciar el correo
-    	//return "354 Ingrese la data de su correo.
-        return "250 Ok";
-    }
-
-    public String procesarDataEnd() {
-    	//es decir lo que viene luego de procesarData()
-    	//recibir y recibir hasta que se envie un punto solo
-    	// .\n
-        return "250 Ok - Mensaje Encolado";
-    }
-
-    public String procesarQuit() {
-        return "221 Bye bye beautiful being of creation!";
-    }
+			}				
+	}
+    
+    
 }

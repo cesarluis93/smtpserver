@@ -1,6 +1,7 @@
 package client;
 
 import java.awt.BorderLayout;
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -15,6 +16,8 @@ import data.Connector;
 import data.DBManager;
 import data.Tools;
 import data.User;
+import dns.DNSlookup;
+
 import javax.swing.JTabbedPane;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -190,6 +193,8 @@ public class SMTPClientGUIMain extends JFrame {
 							String recipientUser = temporal[0];
 							String recipientDomain = temporal[1];
 							
+							System.out.println("Validando DNS del usuario " + recipientDomain +"....");
+							
 							//armar mail
 							//verificar si es local para almacenamiento
 							if(recipientDomain.equals("LabSMTP"))
@@ -204,9 +209,27 @@ public class SMTPClientGUIMain extends JFrame {
 							}
 							else
 							{
-								//enviar a dominio correspondiente
-								/*---------------------aqui iria el DNS verify antes de enviar-----------------------------*/
+								/*---------------------verify DNS antes de enviar-----------------------------*/
 								//enviar a los remitentes, verificando existan 
+								
+								String[] test = {recipientDomain};
+								String [] validar;
+								
+								DNSlookup dns = new DNSlookup();
+								dns.getNames(test);
+								
+								
+								// si el mxRecord no contiene DNS's válidos
+								
+								if(!dns.getStatus()){
+									// el DNS es válido
+								}
+								else{
+									// el DNS es NO válido 
+								}
+								
+								
+								
 								
 								
 								//armar mail en un string para enviar via TCP a los remitentes

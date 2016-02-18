@@ -1,6 +1,7 @@
 package dns;
 
 import java.util.Arrays;
+import java.util.*;
 import java.util.Comparator;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -10,6 +11,15 @@ import javax.naming.directory.InitialDirContext;
 public class DNSlookup {
 
 	
+	boolean status;
+	
+	public DNSlookup(){
+		this.status = false;
+	}
+
+	public boolean getStatus(){
+		return this.status;
+	}
 	
 	public void getNames(String[] names) 
     {
@@ -29,10 +39,14 @@ public class DNSlookup {
         }
         catch (NamingException e)
         {
+        	this.status = true;
+        	
             System.err.println("ERROR: No DNS record for '" + temp + "'");
             System.exit(-2);
+            
         }
      }
+	
 	
     static String[] lookupMailHosts(String domainName) throws NamingException
     {

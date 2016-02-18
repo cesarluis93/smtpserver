@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 import data.Connector;
@@ -207,6 +208,12 @@ final class SmtpRequest implements Runnable{
 			    					//responder OK
 			    					System.out.println("Mail terminado");
 			    					createAndSendMail();
+			    					
+			    					/*-----------------*/
+			    					//ahora CORREOSAJENOS ya tiene todo lo necesario
+			    					//enviar para reenvio de correos!!!!!!!!!!!!!
+			    					/*-----------------*/
+			    					
 			    					sendResponse("250 - OK, mail terminado \n");
 			    					
 			    					//reset lo necesario
@@ -288,6 +295,26 @@ final class SmtpRequest implements Runnable{
 		//otros datos
 		//fecha
 		//enciar
+		Date fechaRecibido = new Date();
+		
+		for(Mail m : MAILSPROPIOS)
+		{
+			//setear data
+			m.setBody(dataDeCorreo);			
+			//setear fecha
+			m.setDateReceived(fechaRecibido.toString());
+			//almacenar en BD
+			//DBManager.saveMail(m); !!!!!!!!!!!!!!!!!!
+		}
+		
+		//ahora setear data para los mails ajenos
+		for(Mail m : MAILSAJENOS)
+		{
+			//setear data
+			m.setBody(dataDeCorreo);
+			//setear fecha
+			m.setDateReceived(fechaRecibido.toString());			
+		}
 	}
 	
 	public boolean processDataContent(String data)

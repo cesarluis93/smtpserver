@@ -15,6 +15,7 @@ import data.Connector;
 import data.DBManager;
 import data.Mail;
 import data.User;
+import dns.DNSlookup;
 
 public class SMTPServer {
 	
@@ -466,23 +467,11 @@ final class SmtpRequest implements Runnable{
 				
 				/*--------VERIFICAR DOMINIO VALIDO------------------!*/
 				//primero validar que el dominioEmisor sea igual al dominioHelo
-				if(dominioEmisor == dominioHelo)
-				{
-					//DNS verify¡¡
-					//boolean valido = algoqueverifique(dominioEmisor)
-					//if(valido)
-						//fromOK = true
-						//return true;
-					//else
-						//sendResponse("Dominio inexistente");
-						//return false;
-					
-				}
-				else
-				{
+				if(dominioEmisor != dominioHelo)
+				{					
 					//error, dominio no es el mismo al ingresado
 					sendResponse("403 - ¡Dominio de Origen incorrecto! deberia ser: "+dominioHelo+"\n");					
-					return false;
+					return false;					
 				}		
 								
 				sendResponse("250 - Ok \n");					

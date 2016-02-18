@@ -27,12 +27,16 @@ import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 
 public class SMTPClientGUIMain extends JFrame {
 
 	private JPanel contentPane;
 	private User loggedUser;
 	private JSONArray correos;
+	private JTextField textField;
+	private JTextField textField_1;
 
 	/**
 	 * Create the frame.
@@ -66,19 +70,21 @@ public class SMTPClientGUIMain extends JFrame {
 //				Object o = mod.getElementAt(list.getSelectedIndex());
 //				String contenidoCorreo = Tools.convertToContentJsonView(o.toString());
 				int indice = list.getSelectedIndex();			
-				
-				//setear data
-				try {
-					textArea.setText("Fecha: "+correos.getJSONObject(indice).get("date")
-									+"\n"
-									+"De: "+correos.getJSONObject(indice).get("from")
-									+"\n\n"
-									+correos.getJSONObject(indice).get("message"));
-					
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				if(indice != -1)
+				{
+					//setear data
+					try {
+						textArea.setText("Fecha: "+correos.getJSONObject(indice).get("date")
+										+"\n"
+										+"De: "+correos.getJSONObject(indice).get("from")
+										+"\n\n"
+										+correos.getJSONObject(indice).get("message"));
+						
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}				
 			}
 		});
 		
@@ -93,13 +99,11 @@ public class SMTPClientGUIMain extends JFrame {
 				correos = dbm.retrieveJsonMails(loggedUser.getUsername());
 				if (correos != null)
 				{
-					System.out.println("Correos de "+loggedUser.getUsername()+"\n" +Tools.convertToContentJsonView(correos.toString()));
+					//System.out.println("Correos de "+loggedUser.getUsername()+"\n" +Tools.convertToContentJsonView(correos.toString()));
 					retrieveMails(correos, list);
-				}
-					
+				}					
 				
-				Connector.close();
-				
+				Connector.close();			
 				
 			}
 		});
@@ -121,6 +125,66 @@ public class SMTPClientGUIMain extends JFrame {
 		
 		JPanel panel_1 = new JPanel();
 		tabbedPane.addTab("Nuevo Correo", null, panel_1, null);
+		panel_1.setLayout(null);
+		
+		JLabel lblFrom = new JLabel("From:");
+		lblFrom.setBounds(10, 11, 46, 14);
+		panel_1.add(lblFrom);
+		
+		JTextArea textArea_1 = new JTextArea();
+		textArea_1.setBounds(60, 14, 146, 20);
+		textArea_1.setText(loggedUser.getUsername()+"@LabSMTP");
+		panel_1.add(textArea_1);
+		
+		JLabel lblTo = new JLabel("To:");
+		lblTo.setBounds(10, 45, 46, 14);
+		panel_1.add(lblTo);
+		
+		//to
+		textField = new JTextField();
+		textField.setBounds(60, 42, 146, 20);
+		panel_1.add(textField);
+		textField.setColumns(10);
+		
+		JLabel lblSubject = new JLabel("Subject:");
+		lblSubject.setBounds(10, 70, 46, 14);
+		panel_1.add(lblSubject);
+		
+		//subjet
+		textField_1 = new JTextField();
+		textField_1.setBounds(60, 73, 146, 20);
+		panel_1.add(textField_1);
+		textField_1.setColumns(10);
+		
+		JLabel lblMessage = new JLabel("Message:");
+		lblMessage.setBounds(300, 11, 72, 14);
+		panel_1.add(lblMessage);
+		
+		JButton btnEnviar = new JButton("Enviar");
+		btnEnviar.setBounds(10, 199, 89, 23);
+		panel_1.add(btnEnviar);
+		
+		//message
+		JTextArea textArea_2 = new JTextArea();
+		
+		JButton btnDescartar = new JButton("Descartar");
+		btnDescartar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//limpiar to, subjet y mensaje
+				textField.setText("");
+				textField_1.setText("");
+				textArea_2.setText("");
+			}
+		});
+		btnDescartar.setBounds(109, 199, 89, 23);
+		panel_1.add(btnDescartar);
+		
+		JScrollPane scrollPane_2 = new JScrollPane();
+		scrollPane_2.setBounds(300, 32, 269, 190);
+		panel_1.add(scrollPane_2);
+		
+		
+		scrollPane_2.setViewportView(textArea_2);
 	}
 	
 	public void retrieveMails(JSONArray correos, JList list)

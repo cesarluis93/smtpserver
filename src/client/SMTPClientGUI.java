@@ -6,7 +6,13 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import data.Connector;
+import data.DBManager;
+import data.User;
+
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -70,9 +76,39 @@ public class SMTPClientGUI extends JFrame {
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//abrir un nuevo JFrame ocn el main
-				SMTPClientGUIMain mainFrame = new SMTPClientGUIMain();
-				mainFrame.setVisible(true);
+				
+				
+				String userLogin = "", passwordLogin = "";
+				
+				userLogin = textField.getText();
+				passwordLogin = textField_1.getText();
+				
+				if(!userLogin.isEmpty() && !passwordLogin.isEmpty())
+				{
+					//validar el usuario
+					Connector.connect();		
+					DBManager dbm = new DBManager();
+					User usuarioVerificar = dbm.existUser(userLogin); //FALTA UNA QUE REVISE PASSWORD
+					
+					if(usuarioVerificar != null)
+					{
+						Connector.close();
+						
+						//abrir un nuevo JFrame ocn el main y el usuario loggeado
+						SMTPClientGUIMain mainFrame = new SMTPClientGUIMain(usuarioVerificar);
+						mainFrame.setVisible(true);
+						
+					}
+					else
+					{
+						Connector.close();
+						JOptionPane.showMessageDialog(null, "Usuario Invalido!");						
+					}
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(null, "No ingreso todos los datos!");
+				}								
 			}
 		});
 		btnLogin.setBounds(22, 144, 89, 23);
@@ -88,7 +124,7 @@ public class SMTPClientGUI extends JFrame {
 		textField_2.setColumns(10);
 		
 		JLabel lblNewpassword = new JLabel("NewPassword");
-		lblNewpassword.setBounds(242, 75, 79, 14);
+		lblNewpassword.setBounds(242, 75, 99, 14);
 		contentPane.add(lblNewpassword);
 		
 		textField_3 = new JTextField();
@@ -97,6 +133,38 @@ public class SMTPClientGUI extends JFrame {
 		textField_3.setColumns(10);
 		
 		JButton btnCreate = new JButton("Create");
+		btnCreate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				//crear un nuevo usuario en la BD
+				String newUser = "", newPassword="";
+				
+				newUser = textField_2.getText();
+				newPassword = textField_3.getText();
+				
+				if(!newUser.isEmpty() && !newPassword.isEmpty())
+				{
+					//instanciar le usuario
+					User usuario = new User(newUser);
+					usuario.setPassword(newPassword);
+					usuario.setBirthdate("01-01-2000");
+					
+					//guardar
+					Connector.connect();
+					
+					usuario.save();
+					
+					Connector.close();
+					//limpiar campos
+					textField_2.setText("");
+					textField_3.setText("");
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(null, "Ingrese todos los datos!");
+				}				
+			}
+		});
 		btnCreate.setBounds(242, 144, 89, 23);
 		contentPane.add(btnCreate);
 	}

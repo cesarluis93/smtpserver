@@ -67,7 +67,7 @@ final class SmtpRequest implements Runnable{
 	
 	ArrayList<String> usuariosPropios = new ArrayList<String>();
 	ArrayList<String> usuariosAjenos = new ArrayList<String>();
-	String usuarioEmisor, dominioEmisor, dataDeCorreo;
+	String usuarioEmisor, dominioEmisor, dominioHelo="", dataDeCorreo;
 	
 	public SmtpRequest(){}
 	
@@ -465,7 +465,25 @@ final class SmtpRequest implements Runnable{
 				System.out.println(usuarioEmisor+" @ "+dominioEmisor);
 				
 				/*--------VERIFICAR DOMINIO VALIDO------------------!*/
-				//DNS verify¡¡
+				//primero validar que el dominioEmisor sea igual al dominioHelo
+				if(dominioEmisor == dominioHelo)
+				{
+					//DNS verify¡¡
+					//boolean valido = algoqueverifique(dominioEmisor)
+					//if(valido)
+						//fromOK = true
+						//return true;
+					//else
+						//sendResponse("Dominio inexistente");
+						//return false;
+					
+				}
+				else
+				{
+					//error, dominio no es el mismo al ingresado
+					sendResponse("403 - ¡Dominio de Origen incorrecto! deberia ser: "+dominioHelo+"\n");					
+					return false;
+				}		
 								
 				sendResponse("250 - Ok \n");					
 				fromOK = true;
@@ -501,9 +519,10 @@ final class SmtpRequest implements Runnable{
 			
 			if(correoUsuario.length > 1)
 			{
-				String nombreDominio = correoUsuario[1]; //nombre usuario
+				String nombreDominio = correoUsuario[1]; //nombre del dominio que escribe
 				System.out.println(nombreDominio);
 				sendResponse("220 - Saludos "+nombreDominio+", estamos a las ordenes...\n");
+				dominioHelo = nombreDominio; //para verificar despues que lo incluya
 			}
 			else
 			{

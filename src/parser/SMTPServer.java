@@ -304,7 +304,7 @@ final class SmtpRequest implements Runnable{
 			//setear fecha
 			m.setDateReceived(fechaRecibido.toString());
 			//almacenar en BD
-			//DBManager.saveMail(m); !!!!!!!!!!!!!!!!!!
+			m.save();
 		}
 		
 		//ahora setear data para los mails ajenos

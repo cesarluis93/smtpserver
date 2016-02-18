@@ -222,10 +222,11 @@ public class SMTPClientGUIMain extends JFrame {
 								// si el mxRecord no contiene DNS's válidos
 								
 								if(!dns.getStatus()){
-									// el DNS es válido
+									// el DNS es válido enviar email
 								}
 								else{
 									// el DNS es NO válido 
+									System.out.println(" DNS Inválido: Correo no puede enviarse!! ");
 								}
 								
 								

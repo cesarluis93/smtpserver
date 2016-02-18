@@ -187,6 +187,7 @@ final class SmtpRequest implements Runnable{
 				    				if(!valido)
 				    				{
 				    					//error
+				    					sendResponse("400 - Error inesperado! \n");
 				    				}
 				    			}
 				    		}
@@ -219,7 +220,15 @@ final class SmtpRequest implements Runnable{
 			    					
 			    					//reset lo necesario
 			    					//resetear las booleanas salvo helo
-			    					fromOK = rcptOK = dataOK = breakOK = false;
+			    					fromOK = false;
+			    					rcptOK = false;
+			    					dataOK = false;
+			    					breakOK = false;
+			    					
+			    					//resetear strings
+			    					usuarioEmisor = "";
+			    					dominioEmisor = "";
+			    					dataDeCorreo = "";
 			    					
 			    					//limpiar arraylists de correos
 			    					MAILSPROPIOS.clear();
@@ -296,6 +305,9 @@ final class SmtpRequest implements Runnable{
 		//otros datos
 		//fecha
 		//enciar
+		System.out.println("SEND");
+		System.out.println("Correo: "+dataDeCorreo);
+		
 		Date fechaRecibido = new Date();
 		
 		for(Mail m : MAILSPROPIOS)
@@ -306,6 +318,7 @@ final class SmtpRequest implements Runnable{
 			m.setDateReceived(fechaRecibido.toString());
 			//almacenar en BD
 			m.save();
+			System.out.println("Propio");
 		}
 		
 		//ahora setear data para los mails ajenos
@@ -314,13 +327,15 @@ final class SmtpRequest implements Runnable{
 			//setear data
 			m.setBody(dataDeCorreo);
 			//setear fecha
-			m.setDateReceived(fechaRecibido.toString());			
+			m.setDateReceived(fechaRecibido.toString());	
+			System.out.println("Ajeno");
 		}
 	}
 	
 	public boolean processDataContent(String data)
 	{
 		//leer y agregar a la data
+		System.out.println("contenido");
 		try{
 			dataDeCorreo += data;
 			return true;
@@ -333,6 +348,7 @@ final class SmtpRequest implements Runnable{
 	
 	public boolean processData(String data)
 	{
+		System.out.println("DATA");
 		String response = "550 - ¡Error en la Data! \n";
 		boolean temp;			
 		
@@ -356,7 +372,7 @@ final class SmtpRequest implements Runnable{
 	{
 		String response = "550 - ¡No existe tal usuario aca \n!";
 		boolean temp;			
-		
+		System.out.println("RCPT TO:");
 		temp = Pattern.matches("(RCPT)\\s+(TO:?)\\s+(.)+", data);
 		
 		if(temp)
@@ -446,6 +462,7 @@ final class SmtpRequest implements Runnable{
 	{
 		String response = "401 - ¡Origen Invalido! \n";
 		boolean temp;		
+		System.out.println("MAIL FROM");
 		temp = Pattern.matches("(MAIL)\\s+(FROM:?)\\s+(.)+", data);
 		
 		if(temp)
@@ -467,7 +484,7 @@ final class SmtpRequest implements Runnable{
 				
 				/*--------VERIFICAR DOMINIO VALIDO------------------!*/
 				//primero validar que el dominioEmisor sea igual al dominioHelo
-				if(dominioEmisor != dominioHelo)
+				if(!dominioEmisor.equals(dominioHelo))
 				{					
 					//error, dominio no es el mismo al ingresado
 					sendResponse("403 - ¡Dominio de Origen incorrecto! deberia ser: "+dominioHelo+"\n");					
@@ -498,6 +515,7 @@ final class SmtpRequest implements Runnable{
 	{
 		String response = "400 - ¡Las personas educadas saludan primero! \n";
 		boolean temp;
+		System.out.println("HELO");
 		temp = Pattern.matches("(HELO|EHLO)(\\s)+(\\w)+", data);
 		
 		if(temp)

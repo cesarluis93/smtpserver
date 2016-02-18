@@ -161,6 +161,21 @@ public class SMTPClientGUIMain extends JFrame {
 		panel_1.add(lblMessage);
 		
 		JButton btnEnviar = new JButton("Enviar");
+		btnEnviar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				//enciar el mal a los usuarios correspondientes
+				//realizar validaciones primero
+				//validar todos los campos tengan data
+				//validar To: sea separable y entendible
+				
+				//armar mail
+				//almacenar los locales
+				//armar mail en un string para enviar via TCP a los remitentes
+				//enviar a los remitentes, verificando existan 
+				
+			}
+		});
 		btnEnviar.setBounds(10, 199, 89, 23);
 		panel_1.add(btnEnviar);
 		

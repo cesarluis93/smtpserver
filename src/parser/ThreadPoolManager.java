@@ -3,7 +3,7 @@ package parser;
 public class ThreadPoolManager {
 	
 	private final int MAX_THREADS;
-	private MyQueue<HttpRequest> queue = new MyQueue<HttpRequest>();
+	private MyQueue<SmtpRequest> queue = new MyQueue<SmtpRequest>();
 	
 	public ThreadPoolManager(int capacity)
 	{

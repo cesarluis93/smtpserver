@@ -22,7 +22,7 @@ public class MyQueue<E> implements baseQueue {
 		else{
 			//Queue llena
 			//cerrar conexion
-			HttpRequest r = (HttpRequest) e;
+			SmtpRequest r = (SmtpRequest) e;
 			System.out.println("Conexion Rechazada");
 			
 			try {

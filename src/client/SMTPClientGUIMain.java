@@ -19,10 +19,12 @@ import javax.swing.JTabbedPane;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 import javax.swing.ListModel;
 import javax.swing.JTextArea;
 import java.awt.event.ActionListener;
+import java.util.regex.Pattern;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionListener;
@@ -160,6 +162,9 @@ public class SMTPClientGUIMain extends JFrame {
 		lblMessage.setBounds(300, 11, 72, 14);
 		panel_1.add(lblMessage);
 		
+		//message
+		JTextArea textArea_2 = new JTextArea();
+		
 		JButton btnEnviar = new JButton("Enviar");
 		btnEnviar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -167,20 +172,79 @@ public class SMTPClientGUIMain extends JFrame {
 				//enciar el mal a los usuarios correspondientes
 				//realizar validaciones primero
 				//validar todos los campos tengan data
-				//validar To: sea separable y entendible
+				String mailTO = textField.getText();
+				String mailSUBJECT = textField_1.getText();
+				String mailMESSAGE = textArea_2.getText();
 				
-				//armar mail
-				//almacenar los locales
-				//armar mail en un string para enviar via TCP a los remitentes
-				//enviar a los remitentes, verificando existan 
-				
+				if(!mailTO.isEmpty() && !mailSUBJECT.isEmpty() && !mailMESSAGE.isEmpty())
+				{
+					//validar To: sea separable y entendible
+					
+					String[] recipients = mailTO.split(",");
+					for(String r : recipients)
+					{
+						//verificar mail valido asdf@asdf
+						String[] temporal = r.split("@");
+						if(temporal.length == 2)
+						{
+							String recipientUser = temporal[0];
+							String recipientDomain = temporal[1];
+							
+							//armar mail
+							//verificar si es local para almacenamiento
+							if(recipientDomain.equals("LabSMTP"))
+							{
+								//local
+								//armar mail
+								
+								
+								
+								
+								//almacenar los locales
+							}
+							else
+							{
+								//enviar a dominio correspondiente
+								/*---------------------aqui iria el DNS verify antes de enviar-----------------------------*/
+								//enviar a los remitentes, verificando existan 
+								
+								
+								//armar mail en un string para enviar via TCP a los remitentes
+								//el string debe llevar (usando enters siempre)
+								//HELO LabSMTP \n 
+								//MAIL FROM: elchavo@LabSMTP
+								//RCPT TO: A quien corersponda
+								//DATA
+								//To:
+								//From:
+								//Subject:
+								//Date:
+								//
+								//los datos
+								//.
+								//QUIT
+								
+								
+								//enviar ese string mediante una conexion al puerto 25 de dicho dominio
+								
+							}							
+						}
+						else
+						{
+							JOptionPane.showMessageDialog(null, "Correo invalido: "+r+"!");
+						}
+					}					
+				}	
+				else
+				{
+					JOptionPane.showMessageDialog(null, "No ingreso todos los datos!");
+				}
 			}
 		});
 		btnEnviar.setBounds(10, 199, 89, 23);
 		panel_1.add(btnEnviar);
 		
-		//message
-		JTextArea textArea_2 = new JTextArea();
+		
 		
 		JButton btnDescartar = new JButton("Descartar");
 		btnDescartar.addActionListener(new ActionListener() {

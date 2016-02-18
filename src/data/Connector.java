@@ -15,7 +15,7 @@ public final class Connector {
 	
 	public static void connect(){
 		try {
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/smtp_redes", "root", "Runtothehills");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/smtp_redes", "root", "");
 			System.out.println("Connection success");
 		} catch (SQLException e) {
 			System.out.println(e);

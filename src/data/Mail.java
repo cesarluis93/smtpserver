@@ -8,6 +8,7 @@ public class Mail {
 	private int id;
 	private User from;
 	private User to;
+	private String subject;
 	private String dateReceived;
 	private String body;
 
@@ -15,16 +16,18 @@ public class Mail {
 		this.body = "";
 	}
 
-	public Mail(User from, User to, String body) {
+	public Mail(User from, User to, String subject, String body) {
 		this.from = from;
 		this.to = to;
+		this.subject = subject;
 		this.body = body;
 	}
 
-	public Mail(int id, User from, User to, String dateReceived, String body) {
+	public Mail(int id, User from, User to, String subject, String dateReceived, String body) {
 		this.id = id;
 		this.from = from;
 		this.to = to;
+		this.subject = subject;
 		this.dateReceived = dateReceived;
 		this.body = body;
 	}
@@ -53,6 +56,14 @@ public class Mail {
 		this.to = to;
 	}
 
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
 	public String getDateReceived() {
 		return dateReceived;
 	}
@@ -72,8 +83,8 @@ public class Mail {
 	public int save() {        
 		// Insertar correo a la BD.
 		String query = String.format(
-			"INSERT INTO mails (user_from, user_to, body) VALUES (%d, %d, '%s');",
-			this.from.getId(), this.to.getId(), this.body
+			"INSERT INTO mails (user_from, user_to, subject, body) VALUES ('%s', %d, '%s', '%s');",
+			this.from.getUsername(), this.to.getId(), this.subject, this.body
 		);
 
 		// Insertar en la BD

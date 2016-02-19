@@ -84,7 +84,7 @@ public class DBManager {
 	 * @param data	Mensaje del correo
 	 * @return Lista de usuarios que no existen en el servidor
 	 */
-	public ArrayList<String> newMail(String from, ArrayList<String> rcpt_to, String data) {
+	public ArrayList<String> newMail(String from, ArrayList<String> rcpt_to, String subject, String data) {
 		ArrayList<String> refused = new ArrayList<String>();
 		
 		User fromUser = this.existUser(from);
@@ -103,7 +103,7 @@ public class DBManager {
 				continue;
 			}
 			
-			Mail mail = new Mail(fromUser, toUser, data);
+			Mail mail = new Mail(fromUser, toUser, subject, data);
 			if (mail.save() > 0) {
 				System.out.println("Correo de '" + from + "' a '" + rcpt + "' ingresado con éxito.");
 			} else {
@@ -144,5 +144,25 @@ public class DBManager {
 		}
 		
 		return jsonMails;
+	}
+	
+	/**
+	 * Login de un usuario dentro del sistema
+	 * @param username	Nombre de usuario
+	 * @param password	Contraseña de usuario
+	 * @return	Si las credenciales son correctas devuelve el objeto que mapea al usuario. De otro modo, devuelve null.
+	 */
+	public User login(String username, String password){
+		User usuario = this.existUser(username);
+		// Verificar que usuario existe
+		if (usuario == null){
+			System.out.println("El nombre de usuario '" + username + "' no existe.");
+			return null;
+		}
+		// Verificar que la contraseña es correcta
+		if (usuario.getPassword().equals(password))
+			return usuario;
+		
+		return null;
 	}
 }

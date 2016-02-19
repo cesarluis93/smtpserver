@@ -13,23 +13,23 @@ public class Tester {
 		//dbm.deleteUser("Mary");
 		//dbm.createUser("Mary", "hola", "12-5-1998");
 		
-//		ArrayList<String> destinos = new ArrayList<String>();
-//		destinos.add("ale");
-//		destinos.add("miguel");
-//		destinos.add("Carlitos");
-//		destinos.add("Mariela");
-//		destinos.add("Julio");
-//		System.out.println(
-//			"Rechazados: \n" +
-//			dbm.newMail("Cesar", destinos, "Hola cómo están.?").toString()
-//		);
+		ArrayList<String> destinos = new ArrayList<String>();
+		destinos.add("ale");
+		destinos.add("miguel");
+		destinos.add("Carlitos");
+		destinos.add("Mariela");
+		destinos.add("Julio");
+		System.out.println(
+			"Rechazados: \n" +
+			dbm.newMail("Cesar", destinos, "Greeting", "Hola cómo están.?").toString()
+		);
 		
-		JSONArray correos = dbm.retrieveJsonMails("Miguel");
-		if (correos != null)
-			System.out.println(
-				"Correos de Miguel: \n" + 
-				Tools.convertToContentJsonView(correos.toString())
-			);
+//		JSONArray correos = dbm.retrieveJsonMails("Miguel");
+//		if (correos != null)
+//			System.out.println(
+//				"Correos de Miguel: \n" + 
+//				Tools.convertToContentJsonView(correos.toString())
+//			);
 		
 		Connector.close();
 

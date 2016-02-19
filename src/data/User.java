@@ -102,6 +102,7 @@ public class User {
 						mails.getInt("id"),
 						from,
 						this,
+						mails.getString("subject"),						
 						mails.getString("date_received"),
 						mails.getString("body")
 					)

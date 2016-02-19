@@ -1,7 +1,6 @@
 package client;
 
 import java.awt.BorderLayout;
-
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -14,6 +13,7 @@ import org.json.JSONObject;
 
 import data.Connector;
 import data.DBManager;
+import data.Mail;
 import data.Tools;
 import data.User;
 import dns.DNSlookup;
@@ -26,9 +26,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 import javax.swing.ListModel;
 import javax.swing.JTextArea;
+
 import java.awt.event.ActionListener;
 import java.util.regex.Pattern;
 import java.awt.event.ActionEvent;
+
 import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
@@ -39,6 +41,7 @@ public class SMTPClientGUIMain extends JFrame {
 
 	private JPanel contentPane;
 	private User loggedUser;
+	private DBManager dbm;
 	private JSONArray correos;
 	private JTextField textField;
 	private JTextField textField_1;
@@ -48,6 +51,7 @@ public class SMTPClientGUIMain extends JFrame {
 	 */
 	public SMTPClientGUIMain(User user) {
 		loggedUser = user;//usuario loggeado
+		dbm = new DBManager();
 		setTitle("SMTP Client");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 600, 300);
@@ -98,7 +102,7 @@ public class SMTPClientGUIMain extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				//cargar correos del ususario loggeado
-				Connector.connect();				
+				Connector.connect();
 				DBManager dbm = new DBManager();
 			
 				correos = dbm.retrieveJsonMails(loggedUser.getUsername());
@@ -106,10 +110,8 @@ public class SMTPClientGUIMain extends JFrame {
 				{
 					//System.out.println("Correos de "+loggedUser.getUsername()+"\n" +Tools.convertToContentJsonView(correos.toString()));
 					retrieveMails(correos, list);
-				}					
-				
-				Connector.close();			
-				
+				}
+				Connector.close();
 			}
 		});
 		btnRefresh.setBounds(10, 11, 89, 23);
@@ -168,6 +170,7 @@ public class SMTPClientGUIMain extends JFrame {
 		//message
 		JTextArea textArea_2 = new JTextArea();
 		
+		// ENVIAR un correo
 		JButton btnEnviar = new JButton("Enviar");
 		btnEnviar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -190,26 +193,33 @@ public class SMTPClientGUIMain extends JFrame {
 						String[] temporal = r.split("@");
 						if(temporal.length == 2)
 						{
-							String recipientUser = temporal[0];
-							String recipientDomain = temporal[1];
+							String recipientUser = temporal[0].trim();
+							String recipientDomain = temporal[1].trim();
 							
 							System.out.println("Validando DNS del usuario " + recipientDomain +"....");
 							
 							//armar mail
 							//verificar si es local para almacenamiento
-							if(recipientDomain.equals("LabSMTP"))
-							{
-								
-								//local
-								//armar mail
-								
-								
-								
-								
-								//almacenar los locales
-							}
-							else
-							{
+							if(recipientDomain.equals("LabSMTP")) {
+								Connector.connect();
+								User userTo = dbm.existUser(recipientUser);
+								if (userTo != null) {
+									Mail mail = new Mail(
+										loggedUser,
+										userTo,
+										mailSUBJECT,
+										mailMESSAGE
+									);
+									if (mail.save() > 0) {
+										System.out.println("Correo de " + loggedUser.getUsername() + " para " + userTo.getUsername() + " ingreso exitosamente.");
+									} else {
+										System.out.println("Correo de " + loggedUser.getUsername() + " para " + userTo.getUsername() + " no se pudo ingresar.");
+									}
+								} else {
+									System.out.println("El usuario " + recipientUser + " no existe en LabSMTP.");
+								}
+								Connector.close();
+							} else {
 								/*---------------------verify DNS antes de enviar-----------------------------*/
 								//enviar a los remitentes, verificando existan 
 								

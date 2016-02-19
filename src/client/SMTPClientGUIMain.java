@@ -199,6 +199,7 @@ public class SMTPClientGUIMain extends JFrame {
 							//verificar si es local para almacenamiento
 							if(recipientDomain.equals("LabSMTP"))
 							{
+								
 								//local
 								//armar mail
 								

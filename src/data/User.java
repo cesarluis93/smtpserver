@@ -83,7 +83,7 @@ public class User {
 	}
 	
 	public ArrayList<Mail> retrievedMails() {
-		String query = "SELECT * FROM mails M LEFT JOIN usuarios U ON M.user_from = U.id WHERE M.user_to = '" + this.id + "' ORDER BY M.date_received DESC;";
+		String query = "SELECT * FROM mails M LEFT JOIN usuarios U ON M.user_from = U.username WHERE M.user_to = '" + this.id + "' ORDER BY M.date_received DESC;";
 		
 		ArrayList<Mail> list = new ArrayList<Mail>();
 		try {

@@ -72,7 +72,7 @@ public class SMTPClientGUI extends JFrame {
 		contentPane.add(textField_1);
 		textField_1.setColumns(10);
 		
-		//LOGIN de usuario
+		// LOGIN de usuario
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -88,14 +88,14 @@ public class SMTPClientGUI extends JFrame {
 					//validar el usuario
 					Connector.connect();		
 					DBManager dbm = new DBManager();
-					User usuarioVerificar = dbm.existUser(userLogin); //FALTA UNA QUE REVISE PASSWORD
+					User usuario = dbm.login(userLogin, passwordLogin); //FALTA UNA QUE REVISE PASSWORD
 					
-					if(usuarioVerificar != null)
+					if(usuario != null)
 					{
 						Connector.close();
 						
 						//abrir un nuevo JFrame ocn el main y el usuario loggeado
-						SMTPClientGUIMain mainFrame = new SMTPClientGUIMain(usuarioVerificar);
+						SMTPClientGUIMain mainFrame = new SMTPClientGUIMain(usuario);
 						mainFrame.setVisible(true);
 						
 					}
@@ -132,6 +132,7 @@ public class SMTPClientGUI extends JFrame {
 		contentPane.add(textField_3);
 		textField_3.setColumns(10);
 		
+		// CREAR usuario
 		JButton btnCreate = new JButton("Create");
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {

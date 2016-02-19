@@ -177,19 +177,39 @@ final class SmtpRequest implements Runnable{
 				    		else if(rcptOK == true && dataOK == false)
 				    		{
 				    			//otro recipiente o DATA
-				    			System.out.println("Procesando recipiente 2,3..");
-				    			valido = processRcptTo(dataToProcess);
+				    			System.out.println("Data o Rcpt..");
+				    			//verificar si es data
+				    			valido = processData(dataToProcess);				    			
 				    			if(!valido)
 				    			{
-				    				//verificar si es un data
-				    				System.out.println("Procesando data");
-				    				valido = processData(dataToProcess);
-				    				if(!valido)
-				    				{
-				    					//error
-				    					sendResponse("400 - Error inesperado! \n");
-				    				}
+				    				//verificar si es un recipinete
+				    				System.out.println("Procesando Recipinete nuevo: ");
+				    				valido = processRcptTo(dataToProcess);				    				
 				    			}
+//				    			else
+//				    			{
+//				    				System.out.println("DATA ingresada..");
+//				    				
+//				    				String lineaTemp = "";
+//					    			try {
+//										lineaTemp = input.readLine();
+//										
+//										//Leer todo la data sin cambiar el input
+//										
+//										while(!lineaTemp.equals("."))
+//										{	
+//											System.out.println("Linea dentro "+lineaTemp);
+//											dataDeCorreo += lineaTemp+"\n";
+//											lineaTemp = input.readLine(); //!
+//										}
+//										System.out.println(dataDeCorreo);
+//										//breakOK = true;
+//										
+//									} catch (IOException e) {
+//										// TODO Auto-generated catch block
+//										e.printStackTrace();
+//									}
+//				    			}
 				    		}
 				    		else if(rcptOK == dataOK == true)
 				    		{
@@ -200,7 +220,28 @@ final class SmtpRequest implements Runnable{
 			    				//.
 			    				//entonces leer mail
 			    				//verificar aca si es un 
-			    				//.			    				
+			    				//.	
+				    			
+//				    			String lineaTemp = "";
+//				    			try {
+//									lineaTemp = input.readLine();
+//									
+//									//Leer todo la data sin cambiar el input
+//									
+//									while(!lineaTemp.equals("."))
+//									{	
+//										System.out.println("Linea dentro "+lineaTemp);
+//										dataDeCorreo += lineaTemp+"\n";
+//										lineaTemp = input.readLine(); //!
+//									}
+//									System.out.println(dataDeCorreo);
+//									//breakOK = true;
+//									
+//								} catch (IOException e) {
+//									// TODO Auto-generated catch block
+//									e.printStackTrace();
+//								}
+				    			
 			    							    				
 			    				boolean temp = Pattern.matches("\\.", dataToProcess);
 			    				if(temp)
@@ -242,7 +283,7 @@ final class SmtpRequest implements Runnable{
 			    				else
 			    				{
 			    					//sigue siendo data
-			    					System.out.println("Leyendo Data");
+			    					System.out.println("Leyendo Data "+ dataToProcess);
 			    					valido = processDataContent(dataToProcess); //!
 			    				}							    			
 				    		}
@@ -309,6 +350,7 @@ final class SmtpRequest implements Runnable{
 		System.out.println("Correo: "+dataDeCorreo);
 		
 		Date fechaRecibido = new Date();
+		Connector.connect();
 		
 		for(Mail m : MAILSPROPIOS)
 		{
@@ -320,6 +362,8 @@ final class SmtpRequest implements Runnable{
 			m.save();
 			System.out.println("Propio");
 		}
+		
+		Connector.close();
 		
 		//ahora setear data para los mails ajenos
 		for(Mail m : MAILSAJENOS)
@@ -335,9 +379,11 @@ final class SmtpRequest implements Runnable{
 	public boolean processDataContent(String data)
 	{
 		//leer y agregar a la data
-		System.out.println("contenido");
+		System.out.println("contenido: "+data);
 		try{
 			dataDeCorreo += data;
+			System.out.println("> "+dataDeCorreo);
+			sendResponse("200 0k - Go on \n");
 			return true;
 		} catch(Exception e)
 		{
@@ -348,24 +394,19 @@ final class SmtpRequest implements Runnable{
 	
 	public boolean processData(String data)
 	{
-		System.out.println("DATA");
-		String response = "550 - ¡Error en la Data! \n";
+		System.out.println("DATA - "+data);
+		//String response = "550 - ¡Error en la Data! \n";
 		boolean temp;			
 		
-		temp = Pattern.matches("(DATA)", data);
+		temp = Pattern.matches("(DATA)|(data)|(ladata)", data);
 		
 		if(temp)
 		{		
-			sendResponse("354 - Inicie su Correo, terminelo con <CRLF>.<CRLF>: \n");
+			sendResponse("200 - Inicie su Correo, terminelo con <CRLF>.<CRLF>: \n");
 			dataOK = true;
 			return true;
 		}
-		else
-		{
-			//error
-			sendResponse(response);
-			return false;
-		}		
+		return false;	
 	}
 	
 	public boolean processRcptTo(String data)
@@ -471,7 +512,7 @@ final class SmtpRequest implements Runnable{
 			//el tercer elemento deberia ser el correo que envia
 			String nombreAutor = correoUsuario[2];
 			//verificar cumpla con usuario@dominio
-			temp = Pattern.matches("(.)+@(.)+", nombreAutor);
+			temp = Pattern.matches("<(.)+@(.)+>", nombreAutor);
 			
 			if(temp)
 			{
@@ -484,7 +525,7 @@ final class SmtpRequest implements Runnable{
 				
 				/*--------VERIFICAR DOMINIO VALIDO------------------!*/
 				//primero validar que el dominioEmisor sea igual al dominioHelo
-				if(!dominioEmisor.equals(dominioHelo))
+				if(!dominioEmisor.equals(dominioHelo+">"))
 				{					
 					//error, dominio no es el mismo al ingresado
 					sendResponse("403 - ¡Dominio de Origen incorrecto! deberia ser: "+dominioHelo+"\n");					

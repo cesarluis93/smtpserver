@@ -355,9 +355,11 @@ final class SmtpRequest implements Runnable{
 		for(Mail m : MAILSPROPIOS)
 		{
 			//setear data
-			m.setBody(dataDeCorreo);			
+			m.setBody(dataDeCorreo);
 			//setear fecha
 			m.setDateReceived(fechaRecibido.toString());
+			m.setFrom(new User(usuarioEmisor + "@" + dominioEmisor));
+			m.setSubject(dataDeCorreo.substring(0, 10));
 			//almacenar en BD
 			m.save();
 			System.out.println("Propio");
@@ -371,6 +373,7 @@ final class SmtpRequest implements Runnable{
 			//setear data
 			m.setBody(dataDeCorreo);
 			//setear fecha
+			m.setFrom(new User(usuarioEmisor + "@" + dominioEmisor));
 			m.setDateReceived(fechaRecibido.toString());	
 			System.out.println("Ajeno");
 		}

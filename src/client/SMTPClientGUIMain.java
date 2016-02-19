@@ -85,7 +85,7 @@ public class SMTPClientGUIMain extends JFrame {
 					try {
 						textArea.setText("Fecha: "+correos.getJSONObject(indice).get("date")
 										+"\n"
-										+"De: "+correos.getJSONObject(indice).get("from")
+										+"De: "/*+correos.getJSONObject(indice).get("from")*/
 										+"\n\n"
 										+correos.getJSONObject(indice).get("message"));
 						
@@ -311,7 +311,7 @@ public class SMTPClientGUIMain extends JFrame {
 		for(int i = 0 ; i < correos.length() ; i++)
 		{
 			try {
-				listModel.addElement(correos.getJSONObject(i).get("date")+" -- "+correos.getJSONObject(i).get("from"));
+				listModel.addElement(correos.getJSONObject(i).get("date")+" -- "/*+correos.getJSONObject(i).get("from")*/);
 				
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
